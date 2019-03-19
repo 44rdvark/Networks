@@ -1,4 +1,4 @@
-from weighted_modularity import get_modularity
+from weighted_modularity import get_modularity, get_modularity_fast
 
 
 # TODO make it so that network is preserved
@@ -9,12 +9,14 @@ def blondel(network):
         adj_list = network.get_adj_list()
         n_nodes = network.get_node_count()
         partition = [i for i in range(n_nodes)]
+        loops = network.get_loops()
+        outer = network.get_outer()
         max_modularity = get_modularity(network, partition)
         improvement = True
         while improvement:
             improvement = False
             for node1 in range(n_nodes):
-                for (node2, _) in adj_list[node1]:
+                for node2 in adj_list[node1]:
                     if partition[node1] != partition[node2]:
                         old_partition = partition[node1]
                         partition[node1] = partition[node2]
