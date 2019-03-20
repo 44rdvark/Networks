@@ -31,5 +31,12 @@ def get_modularity_fast(network, n_communities, inner_degs, outer_degs):
     n_edges = network.get_edge_count()
     modularity = 0
     for i in range(0, n_communities):
-        modularity += 2 * inner_degs[i] / (2 * n_edges) - ((outer_degs[i] + inner_degs[i]) / (2 * n_edges)) ** 2
+        modularity += inner_degs[i] / n_edges - ((outer_degs[i] + inner_degs[i]) / (2 * n_edges)) ** 2
     return modularity
+
+
+def get_partial_modularity(n_edges, com1, com2, inner_degs, outer_degs):
+    return (inner_degs[com1] + inner_degs[com2]) / n_edges\
+           - ((outer_degs[com1] + inner_degs[com1]) / (2 * n_edges)) ** 2\
+           - ((outer_degs[com2] + inner_degs[com2]) / (2 * n_edges)) ** 2
+

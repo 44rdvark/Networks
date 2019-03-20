@@ -1,6 +1,6 @@
 import copy
 
-from weighted_modularity import get_modularity, get_modularity_fast
+from weighted_modularity import get_partial_modularity
 
 
 # TODO make it so that network is preserved
@@ -10,13 +10,13 @@ def blondel(network):
         improvement_outer = False
         adj_list = network.get_adj_list()
         n_nodes = network.get_node_count()
+        n_edges = network.get_edge_count()
         partition = [i for i in range(n_nodes)]
         loops = network.get_loops()
         outer = network.get_outer()
         com_loops = copy.deepcopy(loops)
         com_outer = copy.deepcopy(outer)
-        community = [[i] for i in range(n_nodes)]
-        max_modularity = get_modularity_fast(network, n_nodes, com_loops, com_outer)
+        community = [set([i]) for i in range(n_nodes)]
         improvement = True
         while improvement:
             improvement = False
@@ -26,18 +26,21 @@ def blondel(network):
                         old_community_id = partition[node1]
                         partition[node1] = partition[node2]
                         community_id = partition[node2]
+                        modularity1 = get_partial_modularity(n_edges, community_id, old_community_id,
+                                                             com_loops, com_outer)
                         common = count_common_edges(community[community_id], node1, adj_list)
                         old_common = count_common_edges(community[old_community_id], node1, adj_list)
                         com_loops[community_id] += loops[node1] + common
                         com_outer[community_id] += outer[node1] - common
                         com_loops[old_community_id] -= loops[node1] + old_common
                         com_outer[old_community_id] -= outer[node1] - old_common
-                        modularity = get_modularity_fast(network, n_nodes, com_loops, com_outer)
-                        if modularity > max_modularity:
-                            max_modularity = modularity
+                        modularity2 = get_partial_modularity(n_edges, community_id, old_community_id,
+                                                             com_loops, com_outer)
+                        if modularity2 > modularity1:
                             improvement = True
                             improvement_outer = True
-                            community[partition[node2]].append(node1)
+                            community[community_id].add(node1)
+                            community[old_community_id].remove(node1)
                         else:
                             partition[node1] = old_community_id
                             com_loops[community_id] -= loops[node1] + common
