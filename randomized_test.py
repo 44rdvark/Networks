@@ -43,15 +43,16 @@ def partition_dict_to_list(partition):
     return partition_list
 
 
-(network, partitioning) = generate_random_network(10, 10, 0.8, 0.2)
+(network, partitioning) = generate_random_network(10, 100, 0.9, 0.1)
 graph = network.to_networkx_graph()
 #display(network, partitioning)
 old_network = copy.deepcopy(network)
 old_partitioning = partitioning
 output = blondel(network)
-print(output)
+#print(output)
 partitioning = get_partitioning(output)
 #display(old_network, partitioning)
-external_part = partition_dict_to_list(community.best_partition(graph))
+#external_part = partition_dict_to_list(community.best_partition(graph))
 print(evaluate(old_partitioning, partitioning))
-print(evaluate(old_partitioning, external_part))
+print(output)
+#print(evaluate(old_partitioning, external_part))

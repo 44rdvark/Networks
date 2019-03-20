@@ -50,8 +50,8 @@ class Network(object):
                 if part1 != part2:
                     adj_list[part1][part2] = adj_list[part1].get(part2, 0) + weight
                 else:
-                    loops[part1] += self.__adj_list[node1][node2]
-                    outer[part1] -= self.__adj_list[node1][node2]
+                    loops[part1] += weight
+                    outer[part1] -= weight
         nodes = [[] for _ in range(m)]
         for node in range(self.__n_nodes):
             nodes[partition[node]].extend(self.__nodes[node])
