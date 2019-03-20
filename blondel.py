@@ -9,6 +9,7 @@ def blondel(network):
     while improvement_outer:
         improvement_outer = False
         adj_list = network.get_adj_list()
+        com_adj_list = copy.deepcopy(adj_list)
         n_nodes = network.get_node_count()
         n_edges = network.get_edge_count()
         partition = [i for i in range(n_nodes)]
@@ -21,6 +22,7 @@ def blondel(network):
         while improvement:
             improvement = False
             for node1 in range(n_nodes):
+                old_common = com_adj_list[node1].get(partition[node1], 0)
                 for node2 in adj_list[node1]:
                     if partition[node1] != partition[node2]:
                         old_community_id = partition[node1]
@@ -28,8 +30,7 @@ def blondel(network):
                         community_id = partition[node2]
                         modularity1 = get_partial_modularity(n_edges, community_id, old_community_id,
                                                              com_loops, com_outer)
-                        common = count_common_edges(community[community_id], node1, adj_list)
-                        old_common = count_common_edges(community[old_community_id], node1, adj_list)
+                        common = com_adj_list[node1][community_id]
                         com_loops[community_id] += loops[node1] + common
                         com_outer[community_id] += outer[node1] - common
                         com_loops[old_community_id] -= loops[node1] + old_common
@@ -41,6 +42,8 @@ def blondel(network):
                             improvement_outer = True
                             community[community_id].add(node1)
                             community[old_community_id].remove(node1)
+                            update_community_adjacency(com_adj_list, adj_list, node1, community_id, old_community_id)
+                            old_common = common
                         else:
                             partition[node1] = old_community_id
                             com_loops[community_id] -= loops[node1] + common
@@ -72,3 +75,13 @@ def count_common_edges(community, node, adj_list):
     for community_node in community:
         sum += adj_list[node].get(community_node, 0)
     return sum
+
+
+def update_community_adjacency(com_adj_list, adj_list, node, community, old_community):
+    for neighbour, weight in adj_list[node].items():
+        com_adj_list[neighbour][community] = com_adj_list[neighbour].get(community, 0) + weight
+        if com_adj_list[neighbour][old_community] == weight:
+            del com_adj_list[neighbour][old_community]
+        else:
+            com_adj_list[neighbour][old_community] -= weight
+
