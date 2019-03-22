@@ -3,7 +3,10 @@ import time
 from display import display
 from evaluate_partition import evaluate
 from random import shuffle, uniform
+
+from weighted_modularity import get_modularity
 from weighted_network import Network
+from hierarchical_clustering import hierarchical_clustering
 from blondel import blondel
 import community
 import copy
@@ -45,7 +48,13 @@ def partition_dict_to_list(partition):
     return partition_list
 
 
-(network, partitioning) = generate_random_network(10, 100, 0.8, 0.2)
+(network, partitioning) = generate_random_network(10, 10, 1, 0)
+out, modularity = hierarchical_clustering(network)
+print(modularity)
+
+sum1 = sum2 = 0
+#for i in range(100):
+(network, partitioning) = generate_random_network(10, 100, 0.9, 0.1)
 graph = network.to_networkx_graph()
 #display(network, partitioning)
 old_network = copy.deepcopy(network)
@@ -57,10 +66,16 @@ print(end - start)
 #print(output)
 partitioning = get_partitioning(output)
 #display(old_network, partitioning)
+sum1 += get_modularity(old_network, partitioning)
 start = time.time()
-external_part = partition_dict_to_list(community.best_partition(graph))
+out, mod = hierarchical_clustering(old_network)#partition_dict_to_list(community.best_partition(graph))
 end = time.time()
 print(end - start)
-print(evaluate(old_partitioning, partitioning))
+#print(evaluate(old_partitioning, partitioning))
 #print(output)
-print(evaluate(old_partitioning, external_part))
+#print(evaluate(old_partitioning, external_part))
+sum2 += mod
+
+    #print(out)
+    #print(output)
+print(sum1, sum2)
