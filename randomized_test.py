@@ -5,6 +5,7 @@ from evaluate_partition import evaluate
 from random import shuffle, uniform
 
 from modularity import get_modularity
+from cnm_network import CNMNetwork
 from network import Network
 from hierarchical_clustering import hierarchical_clustering
 from blondel import blondel
@@ -26,7 +27,7 @@ def generate_random_network(n_communities, community_size, prob_inner, prob_oute
             if partitioning[i] == partitioning[j] and rand <= prob_inner \
                     or partitioning[i] != partitioning[j] and rand <= prob_outer:
                 edges.append((i, j))
-    return Network(nodes, edges), partitioning
+    return CNMNetwork(nodes, edges), partitioning
 
 
 # for testing
@@ -51,7 +52,8 @@ def partition_dict_to_list(partition):
 sum1 = sum2 = 0
 #for i in range(100):
 (network, partitioning) = generate_random_network(10, 10, 0.9, 0.1)
-graph = network.to_networkx_graph()
+print(network.get_community_edges())
+'''graph = network.to_networkx_graph()
 #display(network, partitioning)
 old_network = copy.deepcopy(network)
 old_partitioning = partitioning
@@ -75,3 +77,4 @@ sum2 += mod
     #print(out)
     #print(output)
 print(sum1, sum2)
+'''

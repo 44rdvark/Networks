@@ -1,17 +1,44 @@
+from delta_mod import DeltaMod
+from max_heap import MaxHeap
+
+COMMUNITY_HEAP = 0
+GLOBAL_HEAP = 1
+
+
 class CNMNetwork(object):
 
     def __init__(self, nodes, edges):
         self.__n_nodes = len(nodes)
         self.__n_edges = len(edges)
         self.__nodes = [[n] for n in nodes]
-        self.__loops = [0] * self.__n_nodes  # total weight of all loops going out of vertex
-        self.__outer = [0] * self.__n_nodes  # total weight of all non-loops going out of vertex
+        self.__community_edges = [0] * self.__n_nodes  # total weight of all edges going out of a community
         self.__adj_list = [{} for _ in range(self.__n_nodes)]
+        self.__community_heaps = [None] * self.__n_nodes
+        self.__delta_modularities = [[] for _ in range(self.__n_nodes)]
+        self.__global_heap = MaxHeap([], GLOBAL_HEAP)
         for (v1, v2) in edges:
-            self.__adj_list[v1][v2] = 1
-            self.__adj_list[v2][v1] = 1
-            self.__outer[v1] += 1
-            self.__outer[v2] += 1
+            self.__community_edges[v1] += 1
+            self.__community_edges[v2] += 1
+
+        for (v1, v2) in edges:
+            if v1 > v2:
+                v1, v2 = v2, v1
+            position1 = len(self.__delta_modularities[v1])
+            position2 = len(self.__delta_modularities[v2])
+            delta_mod = 1 / (2 * self.__n_edges) - self.__community_edges[v1] * self.__community_edges[v2] \
+                        / (4 * self.__n_edges * self.__n_edges)
+            self.__delta_modularities[v1].append(DeltaMod(delta_mod, (v1, v2), [None, position1]))
+            self.__delta_modularities[v2].append(DeltaMod(delta_mod, (v2, v1), [None, position2]))
+            self.__adj_list[v1][v2] = position1
+            self.__adj_list[v2][v1] = position2
+
+        for i in range(self.__n_nodes):
+            self.__community_heaps[i] = MaxHeap(self.__delta_modularities[i], COMMUNITY_HEAP)
+            if not self.__community_heaps[i].empty():
+                self.__global_heap.push(self.__community_heaps[i].top())
+
+        for i in range(self.__n_nodes):
+            self.__community_edges[i] /= 2 * self.__n_edges
 
     def get_nodes(self):
         return self.__nodes
@@ -25,9 +52,15 @@ class CNMNetwork(object):
     def get_adj_list(self):
         return self.__adj_list
 
-    def get_loops(self):
-        return self.__loops
+    def get_community_edges(self):
+        return self.__community_edges
 
-    def get_outer(self):
-        return self.__outer
+    def get_global_heap(self):
+        return self.__global_heap
+
+    def get_community_heaps(self):
+        return self.__community_heaps
+
+    def get_delta_modularities(self):
+        return self.__delta_modularities
 
