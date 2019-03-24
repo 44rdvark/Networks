@@ -4,8 +4,8 @@ from display import display
 from evaluate_partition import evaluate
 from random import shuffle, uniform
 
-from weighted_modularity import get_modularity
-from weighted_network import Network
+from modularity import get_modularity
+from network import Network
 from hierarchical_clustering import hierarchical_clustering
 from blondel import blondel
 import community
@@ -48,13 +48,9 @@ def partition_dict_to_list(partition):
     return partition_list
 
 
-(network, partitioning) = generate_random_network(10, 10, 1, 0)
-out, modularity = hierarchical_clustering(network)
-print(modularity)
-
 sum1 = sum2 = 0
 #for i in range(100):
-(network, partitioning) = generate_random_network(10, 100, 0.9, 0.1)
+(network, partitioning) = generate_random_network(10, 10, 0.9, 0.1)
 graph = network.to_networkx_graph()
 #display(network, partitioning)
 old_network = copy.deepcopy(network)

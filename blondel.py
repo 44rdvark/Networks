@@ -1,6 +1,6 @@
 import copy
 
-from weighted_modularity import get_partial_modularity
+from modularity import get_modularity_change
 
 
 # TODO make it so that network is preserved
@@ -28,15 +28,15 @@ def blondel(network):
                         old_community_id = partition[node1]
                         partition[node1] = partition[node2]
                         community_id = partition[node2]
-                        modularity1 = get_partial_modularity(n_edges, community_id, old_community_id,
-                                                             com_loops, com_outer)
+                        modularity1 = get_modularity_change(n_edges, community_id, old_community_id,
+                                                            com_loops, com_outer)
                         common = com_adj_list[node1][community_id]
                         com_loops[community_id] += loops[node1] + common
                         com_outer[community_id] += outer[node1] - common
                         com_loops[old_community_id] -= loops[node1] + old_common
                         com_outer[old_community_id] -= outer[node1] - old_common
-                        modularity2 = get_partial_modularity(n_edges, community_id, old_community_id,
-                                                             com_loops, com_outer)
+                        modularity2 = get_modularity_change(n_edges, community_id, old_community_id,
+                                                            com_loops, com_outer)
                         if modularity2 > modularity1:
                             improvement = True
                             improvement_outer = True

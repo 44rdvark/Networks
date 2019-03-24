@@ -1,6 +1,5 @@
 import copy
-from weighted_modularity import get_modularity, get_partial_modularity2
-from weighted_network import Network
+from modularity import get_modularity, get_modularity_change2
 
 
 def hierarchical_clustering(network):
@@ -28,8 +27,8 @@ def hierarchical_clustering(network):
             common = com_adj_list[part1].get(part2, 0)
             new_inner = loops[part1] + loops[part2] + common
             new_outer = outer[part1] + outer[part2] - 2 * common
-            modularity += get_partial_modularity2(network.get_edge_count(), partition[pair[0]],
-                                                  partition[pair[1]], loops, outer, new_inner, new_outer)
+            modularity += get_modularity_change2(network.get_edge_count(), partition[pair[0]],
+                                                partition[pair[1]], loops, outer, new_inner, new_outer)
             merge_communities(pair[0], pair[1], partition, community, com_adj_list, loops, outer)
             if modularity > max_modularity:
                 max_modularity = modularity
@@ -73,7 +72,6 @@ def calculate_similarity(adj_matrix, n_nodes):
     return similarity
 
 
-#  calculates Hamming distance between two binary vectors
 def distance(vec1, vec2, ind1, ind2):
     dist = 0
     for i in range(len(vec1)):

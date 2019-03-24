@@ -35,13 +35,13 @@ def get_modularity_fast(network, n_communities, inner_degs, outer_degs):
     return modularity
 
 
-def get_partial_modularity(n_edges, com1, com2, inner_degs, outer_degs):
+def get_modularity_change(n_edges, com1, com2, inner_degs, outer_degs):
     return (inner_degs[com1] + inner_degs[com2]) / n_edges \
            - ((outer_degs[com1] + inner_degs[com1]) / (2 * n_edges)) ** 2 \
            - ((outer_degs[com2] + inner_degs[com2]) / (2 * n_edges)) ** 2
 
 
-def get_partial_modularity2(n_edges, com1, com2, inner_degs, outer_degs, new_inner, new_outer):
+def get_modularity_change2(n_edges, com1, com2, inner_degs, outer_degs, new_inner, new_outer):
     return new_inner / n_edges - ((2 * new_inner + new_outer) / (2 * n_edges)) ** 2 \
            - ((inner_degs[com1] + inner_degs[com2]) / n_edges
               - ((outer_degs[com1] + 2 * inner_degs[com1]) / (2 * n_edges)) ** 2
