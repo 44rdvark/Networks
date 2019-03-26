@@ -22,12 +22,13 @@ class MaxHeap:
         self.__size += 1
         item.set_position(self.__which, self.__size - 1)
         self.upheap(self.__size - 1)
-        return
 
     def remove(self, i):
-        self.swap(self.__heap[i], self.heap[self.__size - 1])
-        self.__size -= 1
-        self.downheap(i)
+        if i < self.__size:
+            self.__size -= 1
+            if i != self.__size:
+                self.__swap(i, self.__size)
+                self.downheap(i)
 
     def pop(self):
         self.__swap(0, self.__size - 1)
@@ -36,19 +37,19 @@ class MaxHeap:
         return self.__heap[self.__size]
 
     def top(self):
-        return self.__heap[0]
+        return self.__heap[0] if self.__size > 0 else None
 
     def size(self):
         return self.__size
 
     def upheap(self, i):
-        p = int(i / 2)
+        p = int((i - 1) / 2)
         if i != 0 and self.__heap[p] < self.__heap[i]:
             self.__swap(i, p)
             self.upheap(p)
 
     def downheap(self, i):
-        l, r, m = 2 * i, 2 * i + 1, i
+        l, r, m = 2 * i + 1, 2 * i + 2, i
         if l < self.size() and self.__heap[l] > self.__heap[i]:
             m = l
         if r < self.size() and self.__heap[r] > self.__heap[m]:
@@ -70,3 +71,11 @@ class MaxHeap:
 
     def __len__(self):
         return self.__size
+
+    def __str__(self):
+        s = "["
+        for item in range(self.__size):
+            s += str(self.__heap[item]) + ", "
+        s += "]"
+        return s
+

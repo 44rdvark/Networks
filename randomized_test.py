@@ -1,5 +1,6 @@
 import time
 
+from clauset_newman_moore import clauset_newman_moore
 from display import display
 from evaluate_partition import evaluate
 from random import shuffle, uniform
@@ -15,7 +16,7 @@ import copy
 
 # initializes random network with equally sized communities
 # returns generated network and expected partitioning
-def generate_random_network(n_communities, community_size, prob_inner, prob_outer):
+def generate_random_cnm_network(n_communities, community_size, prob_inner, prob_outer):
     n_nodes = n_communities * community_size
     nodes = list(range(n_nodes))
     edges = []
@@ -28,6 +29,21 @@ def generate_random_network(n_communities, community_size, prob_inner, prob_oute
                     or partitioning[i] != partitioning[j] and rand <= prob_outer:
                 edges.append((i, j))
     return CNMNetwork(nodes, edges), partitioning
+
+
+def generate_random_network(n_communities, community_size, prob_inner, prob_outer):
+    n_nodes = n_communities * community_size
+    nodes = list(range(n_nodes))
+    edges = []
+    partitioning = list(range(n_communities)) * community_size
+    shuffle(partitioning)
+    for i in range(0, n_nodes):
+        for j in range(i + 1, n_nodes):
+            rand = uniform(0, 1)
+            if partitioning[i] == partitioning[j] and rand <= prob_inner \
+                    or partitioning[i] != partitioning[j] and rand <= prob_outer:
+                edges.append((i, j))
+    return Network(nodes, edges), partitioning
 
 
 # for testing
@@ -51,8 +67,10 @@ def partition_dict_to_list(partition):
 
 sum1 = sum2 = 0
 #for i in range(100):
-(network, partitioning) = generate_random_network(10, 10, 0.9, 0.1)
-print(network.get_community_edges())
+(network, partitioning) = generate_random_cnm_network(10, 10, 0.8, 0.2)
+(network2, partitioning) = generate_random_network(4, 4, 1, 0)
+print(hierarchical_clustering(network2))
+print(clauset_newman_moore(network))
 '''graph = network.to_networkx_graph()
 #display(network, partitioning)
 old_network = copy.deepcopy(network)

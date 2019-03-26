@@ -1,8 +1,8 @@
 class DeltaMod(object):
-    def __init__(self, value, nodes, positions):
+    def __init__(self, value, nodes):
         self.__value = value
         self.__nodes = nodes
-        self.__positions = positions
+        self.__positions = [None, None]
 
     def get_position(self, which):
         return self.__positions[which]
@@ -12,6 +12,9 @@ class DeltaMod(object):
 
     def get_nodes(self):
         return self.__nodes
+
+    def set_nodes(self, nodes):
+        self.__nodes = nodes
 
     def get_value(self):
         return self.__value
@@ -24,6 +27,9 @@ class DeltaMod(object):
 
     def __lt__(self, other):
         return self.__value < other.get_value()
+
+    def __str__(self):
+        return str(self.__nodes) + " " + str(self.__positions) + " " + str(self.__value)
 
 
 
