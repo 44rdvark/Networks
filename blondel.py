@@ -5,16 +5,17 @@ from modularity import get_modularity_change
 
 # TODO make it so that network is preserved
 def blondel(network):
+    tmp_network = copy.deepcopy(network)
     improvement_outer = True
     while improvement_outer:
         improvement_outer = False
-        adj_list = network.get_adj_list()
+        adj_list = tmp_network.get_adj_list()
         com_adj_list = copy.deepcopy(adj_list)
-        n_nodes = network.get_node_count()
-        n_edges = network.get_edge_count()
+        n_nodes = tmp_network.get_node_count()
+        n_edges = tmp_network.get_edge_count()
         partition = [i for i in range(n_nodes)]
-        loops = network.get_loops()
-        outer = network.get_outer()
+        loops = tmp_network.get_loops()
+        outer = tmp_network.get_outer()
         com_loops = copy.deepcopy(loops)
         com_outer = copy.deepcopy(outer)
         community = [set([i]) for i in range(n_nodes)]
@@ -51,8 +52,8 @@ def blondel(network):
                             com_loops[old_community_id] += loops[node1] + old_common
                             com_outer[old_community_id] += outer[node1] - old_common
         partition = relabel(partition)
-        network.merge_nodes(partition)
-    return network.get_nodes()
+        tmp_network.merge_nodes(partition)
+    return tmp_network.get_nodes()
 
 
 # change partition labels so that they're within range [0, partition count)

@@ -2,6 +2,7 @@ from delta_mod import DeltaMod
 from max_heap import MaxHeap
 from hierarchical_clustering import format_communities
 
+
 def clauset_newman_moore(network):
     n_nodes = network.get_node_count()
     community_edges = network.get_community_edges()
@@ -83,9 +84,9 @@ def remove_from_heap(com1, adj, deltas, com_heap, global_heap):
     pos = adj[com1]
     if com_heap.top() is deltas[pos]:
         com_heap.pop()
-        global_heap.remove(deltas[pos].get_position(1))
-        if not com_heap.empty():
-            global_heap.push(com_heap.top())
+        #global_heap.remove(deltas[pos].get_position(1))
+        #if not com_heap.empty():
+        #    global_heap.push(com_heap.top())
     else:
         com_heap.remove(deltas[pos].get_position(0))
     del adj[com1]

@@ -1,11 +1,14 @@
 import networkx as nx
 
+from cnm_network import CNMNetwork
+
 
 class Network(object):
 
     def __init__(self, nodes, edges):
         self.__n_nodes = len(nodes)
         self.__n_edges = len(edges)
+        self.__edges = edges
         self.__nodes = [[n] for n in nodes]
         self.__loops = [0] * self.__n_nodes  # total weight of all loops going out of vertex
         self.__outer = [0] * self.__n_nodes  # total weight of all non-loops going out of vertex
@@ -61,7 +64,11 @@ class Network(object):
         self.__loops = loops
         self.__outer = outer
 
-    # for testing purposes
+    # for testing
+    def to_cnm_network(self):
+        return CNMNetwork(self.__nodes, self.__edges)
+
+    # for testing
     def to_networkx_graph(self):
         g = nx.Graph()
         for n in range(self.__n_nodes):

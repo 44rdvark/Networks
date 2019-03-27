@@ -1,5 +1,6 @@
 import time
 
+import networkx as nx
 from clauset_newman_moore import clauset_newman_moore
 from display import display
 from evaluate_partition import evaluate
@@ -16,21 +17,6 @@ import copy
 
 # initializes random network with equally sized communities
 # returns generated network and expected partitioning
-def generate_random_cnm_network(n_communities, community_size, prob_inner, prob_outer):
-    n_nodes = n_communities * community_size
-    nodes = list(range(n_nodes))
-    edges = []
-    partitioning = list(range(n_communities)) * community_size
-    shuffle(partitioning)
-    for i in range(0, n_nodes):
-        for j in range(i + 1, n_nodes):
-            rand = uniform(0, 1)
-            if partitioning[i] == partitioning[j] and rand <= prob_inner \
-                    or partitioning[i] != partitioning[j] and rand <= prob_outer:
-                edges.append((i, j))
-    return CNMNetwork(nodes, edges), partitioning
-
-
 def generate_random_network(n_communities, community_size, prob_inner, prob_outer):
     n_nodes = n_communities * community_size
     nodes = list(range(n_nodes))
@@ -65,34 +51,34 @@ def partition_dict_to_list(partition):
     return partition_list
 
 
-sum1 = sum2 = 0
-#for i in range(100):
-(network, partitioning) = generate_random_cnm_network(10, 10, 0.8, 0.2)
-(network2, partitioning) = generate_random_network(4, 4, 1, 0)
-print(hierarchical_clustering(network2))
-print(clauset_newman_moore(network))
-'''graph = network.to_networkx_graph()
-#display(network, partitioning)
-old_network = copy.deepcopy(network)
-old_partitioning = partitioning
+def downscale(nodes, edges):
+    for i in range(len(nodes)):
+        nodes[i] = nodes[i] - 1
+    for i in range(len(edges)):
+        edges[i] = (edges[i][0] - 1, edges[i][1] - 1)
+    return
+
+
+g = nx.read_gml('lesmis.gml', label='id')
+(network, partitioning) = generate_random_network(300, 10, 0.8, 0.2)
+print(network.get_edge_count())
+nodes = list(g.nodes())
+edges = list(g.edges())
+print(len(nodes), len(edges))
+#downscale(nodes, edges)
+#network = Network(nodes, edges)
+cnm_network = network.to_cnm_network()
+graph = network.to_networkx_graph()
 start = time.time()
+#old_network = copy.deepcopy(network)
 output = blondel(network)
 end = time.time()
-print(end - start)
-#print(output)
+print("time:", end - start)
 partitioning = get_partitioning(output)
-#display(old_network, partitioning)
-sum1 += get_modularity(old_network, partitioning)
+print("modularity:", get_modularity(network, partitioning))
 start = time.time()
-out, mod = hierarchical_clustering(old_network)#partition_dict_to_list(community.best_partition(graph))
+out, mod = clauset_newman_moore(cnm_network)
+print(community.modularity(community.best_partition(g), g))
 end = time.time()
-print(end - start)
-#print(evaluate(old_partitioning, partitioning))
-#print(output)
-#print(evaluate(old_partitioning, external_part))
-sum2 += mod
-
-    #print(out)
-    #print(output)
-print(sum1, sum2)
-'''
+print("time", end - start)
+print("modularity:", mod)
