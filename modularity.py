@@ -1,3 +1,22 @@
+def get_modularity2(adj_list, partition):
+    n_nodes = len(adj_list)
+    n_edges = sum(len(adj_list[i]) for i in range(n_nodes)) / 2
+    n_communities = max(partition) + 1
+    inner_degs = n_communities * [0]
+    total_degs = n_communities * [0]
+    for node in range(n_nodes):
+        total_degs[partition[node]] += len(adj_list[node])
+    for node1 in range(n_nodes):
+        part = partition[node1]
+        for node2 in adj_list[node1]:
+            if node1 < node2 and part == partition[node2]:
+                inner_degs[part] += 1
+    modularity = 0
+    for i in range(n_communities):
+        modularity += inner_degs[i] / n_edges - total_degs[i] * total_degs[i] / (4 * n_edges * n_edges)
+    return modularity
+
+
 def get_modularity(network, partition):
     adj_list = network.get_adj_list()
     n_nodes = network.get_node_count()
@@ -18,7 +37,7 @@ def get_modularity(network, partition):
         part = partition[node1]
         for (node2, weight) in adj_list[node1].items():
             if node1 < node2 and part == partition[node2]:
-                inner_degs[partition[node1]] += weight
+                inner_degs[part] += weight
     for i in range(n_communities):
         inner_degs[i] /= n_edges
     modularity = 0
