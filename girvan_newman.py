@@ -29,7 +29,7 @@ def girvan_newman(nodes, edges):
         if edge[1] not in component1:
             component2 = get_connected_component(adj_list, edge[1], n_nodes)
             for node in component2:
-                partition[node] = n_components - 1
+                partition[node] = n_components
             n_components += 1
             modularity = get_modularity2(original_adj_list, partition)
             if modularity > max_modularity:
@@ -43,10 +43,9 @@ def update_max_centrality(centrality, max_centrality, nodes):
     for node1 in nodes:
         m = (-1, -1, -1)
         for node2 in nodes:
-            if centrality[node1][node2] and (not m or centrality[node1][node2] > m[0]):
+            if centrality[node1][node2] and centrality[node1][node2] >= m[0]:
                 m = (centrality[node1][node2], node1, node2)
         max_centrality[node1] = m
-    return
 
 
 def get_connected_component(adj_list, node, n_nodes):
@@ -81,4 +80,3 @@ def assign_components(adj_list, n_nodes):
                         queue.append(node2)
             label += 1
     return label, components
-
