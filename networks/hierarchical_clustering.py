@@ -1,20 +1,25 @@
-import copy
-from networks.modularity import get_modularity, get_modularity_change2
+from copy import deepcopy
 
 
-def hierarchical_clustering(network):
-    n_nodes = network.get_node_count()
-    adj_list = network.get_adj_list()
-    com_adj_list = copy.deepcopy(adj_list)
-    loops = network.get_loops()
-    outer = network.get_outer()
+def hierarchical_clustering(nodes, edges):
+    n_nodes = len(nodes)
+    n_edges = len(edges)
+    loops = [0] * n_nodes  # total weight of all loops going out of vertex
+    outer = [0] * n_nodes  # total weight of all non-loops going out of vertex
+    adj_list = [{} for _ in range(n_nodes)]
+    for (v1, v2) in edges:
+        adj_list[v1][v2] = 1
+        adj_list[v2][v1] = 1
+        outer[v1] += 1
+        outer[v2] += 1
+    com_adj_list = deepcopy(adj_list)
     n_communities = n_nodes
     adj_matrix = generate_adjacency_matrix(adj_list, n_nodes)
     similarity = calculate_similarity(adj_matrix, n_nodes)
     similarity.sort(key=lambda triple: triple[2])
     partition = [i for i in range(n_nodes)]
     community = [[i] for i in range(n_nodes)]
-    modularity = get_modularity(network, partition)
+    modularity = sum(-out * out / (4 * n_edges * n_edges) for out in outer)
     max_modularity = modularity
     best_partition = format_communities(community)
     for pair in similarity:
@@ -27,12 +32,12 @@ def hierarchical_clustering(network):
             common = com_adj_list[part1].get(part2, 0)
             new_inner = loops[part1] + loops[part2] + common
             new_outer = outer[part1] + outer[part2] - 2 * common
-            modularity += get_modularity_change2(network.get_edge_count(), partition[pair[0]],
+            modularity += get_modularity_change(n_edges, partition[pair[0]],
                                                 partition[pair[1]], loops, outer, new_inner, new_outer)
             merge_communities(pair[0], pair[1], partition, community, com_adj_list, loops, outer)
             if modularity > max_modularity:
                 max_modularity = modularity
-                best_partition = copy.deepcopy(community)
+                best_partition = deepcopy(community)
     return format_communities(best_partition), max_modularity
 
 
@@ -86,3 +91,11 @@ def format_communities(community):
         if community[i]:
             formated_community.append(community[i])
     return formated_community
+
+
+def get_modularity_change(n_edges, com1, com2, inner_degs, outer_degs, new_inner, new_outer):
+    return new_inner / n_edges - ((2 * new_inner + new_outer) / (2 * n_edges)) ** 2 \
+           - ((inner_degs[com1] + inner_degs[com2]) / n_edges
+              - ((outer_degs[com1] + 2 * inner_degs[com1]) / (2 * n_edges)) ** 2
+              - ((outer_degs[com2] + 2 * inner_degs[com2]) / (2 * n_edges)) ** 2)
+

@@ -5,29 +5,13 @@ from networks.clauset_newman_moore import clauset_newman_moore
 from random import shuffle, uniform
 
 from networks.girvan_newman import girvan_newman
-from networks.modularity import get_modularity
-from networks.network import Network
 from networks.hierarchical_clustering import hierarchical_clustering
 from networks.blondel import blondel
 
 
 # initializes random network with equally sized communities
-# returns generated network and expected partitioning
+# returns nodes and edges of generated network and expected partitioning
 def generate_random_network(n_communities, community_size, prob_inner, prob_outer):
-    n_nodes = n_communities * community_size
-    nodes = list(range(n_nodes))
-    edges = []
-    partitioning = list(range(n_communities)) * community_size
-    shuffle(partitioning)
-    for i in range(0, n_nodes):
-        for j in range(i + 1, n_nodes):
-            rand = uniform(0, 1)
-            if partitioning[i] == partitioning[j] and rand <= prob_inner \
-                    or partitioning[i] != partitioning[j] and rand <= prob_outer:
-                edges.append((i, j))
-    return Network(nodes, edges), partitioning
-
-def generate_random_network2(n_communities, community_size, prob_inner, prob_outer):
     n_nodes = n_communities * community_size
     nodes = list(range(n_nodes))
     edges = []
@@ -75,16 +59,11 @@ downscale(nodes, edges)
 #nodes, edges, partitioning = generate_random_network2(10, 10, 0.9, 0.1)
 print(len(edges), len(nodes))
 
-network = Network(nodes, edges)
-cnm_network = network.to_cnm_network()
-
 start = time.time()
-output = blondel(network)
+out, mod = blondel(nodes, edges)
 end = time.time()
-partitioning = get_partitioning(output)
-print("modularity:", get_modularity(network, partitioning))
+print("modularity:", mod)
 print("time:", end - start)
-
 
 start = time.time()
 print("modularity: ", girvan_newman(nodes, edges)[0])
@@ -93,14 +72,14 @@ print("time: ", end - start)
 
 
 start = time.time()
-out, mod = hierarchical_clustering(network)
+out, mod = hierarchical_clustering(nodes, edges)
 end = time.time()
 print("modularity:", mod)
 print("time", end - start)
 
 
 start = time.time()
-out, mod = clauset_newman_moore(cnm_network)
+out, mod = clauset_newman_moore(nodes, edges)
 end = time.time()
 print("modularity:", mod)
 print("time", end - start)
