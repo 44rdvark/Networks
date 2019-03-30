@@ -1,20 +1,14 @@
 import time
 
 import networkx as nx
-from networkx.algorithms.community.centrality import girvan_newman as gn
-from clauset_newman_moore import clauset_newman_moore
-from display import display
-from evaluate_partition import evaluate
+from networks.clauset_newman_moore import clauset_newman_moore
 from random import shuffle, uniform
 
-from girvan_newman import girvan_newman
-from modularity import get_modularity
-from cnm_network import CNMNetwork
-from network import Network
-from hierarchical_clustering import hierarchical_clustering
-from blondel import blondel
-import community
-import copy
+from networks.girvan_newman import girvan_newman
+from networks.modularity import get_modularity
+from networks.network import Network
+from networks.hierarchical_clustering import hierarchical_clustering
+from networks.blondel import blondel
 
 
 # initializes random network with equally sized communities
@@ -74,40 +68,40 @@ def downscale(nodes, edges):
     return
 
 
-g = nx.read_gml('karate.gml', label='id')
-comp = gn(g)
+g = nx.read_gml('networks/data/karate.gml', label='id')
 nodes = list(g.nodes())
 edges = list(g.edges())
 downscale(nodes, edges)
 #nodes, edges, partitioning = generate_random_network2(10, 10, 0.9, 0.1)
-start = time.time()
-print("modularity: ", girvan_newman(nodes, edges)[0])
-end = time.time()
-print("time: ", end - start)
-'''
-#g = nx.read_gml('lesmis.gml', label='id')
-#(network, partitioning) = generate_random_network(30, 100, 0.8, 0.2)
-#print(network.get_edge_count())
-#nodes = list(g.nodes())
-#edges = list(g.edges())
-#print(len(nodes), len(edges))
-#downscale(nodes, edges)
+print(len(edges), len(nodes))
+
 network = Network(nodes, edges)
 cnm_network = network.to_cnm_network()
-graph = network.to_networkx_graph()
+
 start = time.time()
-#old_network = copy.deepcopy(network)
 output = blondel(network)
 end = time.time()
 partitioning = get_partitioning(output)
 print("modularity:", get_modularity(network, partitioning))
 print("time:", end - start)
 
+
 start = time.time()
-out, mod = clauset_newman_moore(cnm_network)
-print(out)
-#print(community.modularity(community.best_partition(g), g))
+print("modularity: ", girvan_newman(nodes, edges)[0])
+end = time.time()
+print("time: ", end - start)
+
+
+start = time.time()
+out, mod = hierarchical_clustering(network)
 end = time.time()
 print("modularity:", mod)
 print("time", end - start)
-'''
+
+
+start = time.time()
+out, mod = clauset_newman_moore(cnm_network)
+end = time.time()
+print("modularity:", mod)
+print("time", end - start)
+

@@ -1,6 +1,6 @@
-from delta_mod import DeltaMod
-from max_heap import MaxHeap
-from hierarchical_clustering import format_communities
+from networks.delta_mod import DeltaMod
+from networks.max_heap import MaxHeap
+from networks.hierarchical_clustering import format_communities
 
 
 def clauset_newman_moore(network):

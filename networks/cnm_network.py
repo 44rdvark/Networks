@@ -1,5 +1,5 @@
-from delta_mod import DeltaMod
-from max_heap import MaxHeap
+from networks.delta_mod import DeltaMod
+from networks.max_heap import MaxHeap
 
 COMMUNITY_HEAP = 0
 GLOBAL_HEAP = 1

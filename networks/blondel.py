@@ -1,6 +1,6 @@
 import copy
 
-from modularity import get_modularity_change
+from networks.modularity import get_modularity_change
 
 
 # TODO make it so that network is preserved

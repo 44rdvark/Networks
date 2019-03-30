@@ -1,5 +1,5 @@
 import copy
-from modularity import get_modularity, get_modularity_change2
+from networks.modularity import get_modularity, get_modularity_change2
 
 
 def hierarchical_clustering(network):
@@ -86,6 +86,3 @@ def format_communities(community):
         if community[i]:
             formated_community.append(community[i])
     return formated_community
-
-# network = Network([0, 1, 2, 3, 4], [(0, 1), (1, 2), (0, 3)])
-# print(hierarchical_clustering(network))

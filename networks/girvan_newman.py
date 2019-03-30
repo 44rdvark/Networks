@@ -1,8 +1,8 @@
 import copy
 from collections import deque
 
-from modularity import get_modularity2
-from betweenness_centrality import update_betweenness_centrality
+from networks.modularity import get_modularity2
+from networks.betweenness_centrality import update_betweenness_centrality
 
 
 def girvan_newman(nodes, edges):

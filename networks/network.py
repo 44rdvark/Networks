@@ -1,6 +1,6 @@
 import networkx as nx
 
-from cnm_network import CNMNetwork
+from networks.cnm_network import CNMNetwork
 
 
 class Network(object):
