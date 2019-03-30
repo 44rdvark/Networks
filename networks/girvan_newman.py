@@ -33,7 +33,7 @@ def girvan_newman(nodes, edges):
                 max_modularity = modularity
                 best_partition = deepcopy(partition)
             nodes.extend(component2)
-    return max_modularity, best_partition
+    return best_partition, max_modularity
 
 
 def update_max_centrality(centrality, max_centrality, nodes):

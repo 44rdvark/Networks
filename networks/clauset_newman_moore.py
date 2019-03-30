@@ -120,7 +120,6 @@ def format_communities(partitioning):
     return formated
 
 
-
 # value - value of modularity delta
 # nodes - nodes representing communities between which modularity delta is calculated
 # positions - positions of this DeltaMod instance in global and community heaps
