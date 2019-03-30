@@ -33,7 +33,7 @@ def girvan_newman(nodes, edges):
                 max_modularity = modularity
                 best_partition = deepcopy(partition)
             nodes.extend(component2)
-    return best_partition, max_modularity
+    return to_community_list(best_partition), max_modularity
 
 
 def update_max_centrality(centrality, max_centrality, nodes):
@@ -133,3 +133,11 @@ def update_betweenness_centrality(adj_list, centrality, nodes):
                 dependency[u] += dependency_increase
                 centrality[w][u] += dependency_increase / 2
                 centrality[u][w] += dependency_increase / 2
+
+
+def to_community_list(partition):
+    communities = [[] for _ in range(max(partition) + 1)]
+    for node in range(0, len(partition)):
+        communities[partition[node]].append(node)
+    return communities
+

@@ -21,12 +21,11 @@ print("modularity:", round(mod, 2))
 print("time:", round(end - start, 2))
 
 start = time()
-out, mod = girvan_newman(nodes, edges)
+out, mod = clauset_newman_moore(nodes, edges)
 end = time()
-print("\n--- Girvan-Newman ---")
-print("modularity: ", round(mod, 2))
-print("time: ", round(end - start, 2))
-
+print("\n--- Clauset-Newman-Moore ---")
+print("modularity:", round(mod, 2))
+print("time", round(end - start, 2))
 
 start = time()
 out, mod = hierarchical_clustering(nodes, edges)
@@ -35,10 +34,14 @@ print("\n--- Hierarchical clustering ---")
 print("modularity:", round(mod, 2))
 print("time", round(end - start, 2))
 
-
 start = time()
-out, mod = clauset_newman_moore(nodes, edges)
+out, mod = girvan_newman(nodes, edges)
 end = time()
-print("\n--- Clauset-Newman-Moore ---")
-print("modularity:", round(mod, 2))
-print("time", round(end - start, 2))
+print("\n--- Girvan-Newman ---")
+print("modularity: ", round(mod, 2))
+print("time: ", round(end - start, 2))
+
+
+
+
+
