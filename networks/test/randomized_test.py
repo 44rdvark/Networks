@@ -23,8 +23,8 @@ def generate_random_network(n_communities, community_size, prob_inner, prob_oute
     return nodes, edges, partitioning
 
 
-nodes, edges, partitioning = generate_random_network(10, 10, 0.8, 0.2)
-
+nodes, edges, partitioning = generate_random_network(10, 10, 0.9, 0.1)
+print(len(nodes), len(edges))
 start = time()
 out, mod = blondel(nodes, edges)
 end = time()

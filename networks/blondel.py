@@ -21,15 +21,17 @@ def blondel(nodes, edges):
         partition = [i for i in range(n_nodes)]
         com_loops = deepcopy(loops)
         com_outer = deepcopy(outer)
-        community = [set([i]) for i in range(n_nodes)]
+        community = [{i} for i in range(n_nodes)]
         improvement = True
         while improvement:
             improvement = False
             for node1 in range(n_nodes):
                 old_common = com_adj_list[node1].get(partition[node1], 0)
+                best_delta = 0
+                best_community = None
+                old_community_id = partition[node1]
                 for node2 in adj_list[node1]:
                     if partition[node1] != partition[node2]:
-                        old_community_id = partition[node1]
                         partition[node1] = partition[node2]
                         community_id = partition[node2]
                         modularity1 = get_modularity_change(n_edges, community_id, old_community_id,
@@ -41,20 +43,28 @@ def blondel(nodes, edges):
                         com_outer[old_community_id] -= outer[node1] - old_common
                         modularity2 = get_modularity_change(n_edges, community_id, old_community_id,
                                                             com_loops, com_outer)
-                        if modularity2 > modularity1:
-                            improvement = True
-                            improvement_outer = True
-                            modularity += modularity2 - modularity1
-                            community[community_id].add(node1)
-                            community[old_community_id].remove(node1)
-                            update_community_adjacency(com_adj_list, adj_list, node1, community_id, old_community_id)
-                            old_common = common
-                        else:
-                            partition[node1] = old_community_id
-                            com_loops[community_id] -= loops[node1] + common
-                            com_outer[community_id] -= outer[node1] - common
-                            com_loops[old_community_id] += loops[node1] + old_common
-                            com_outer[old_community_id] += outer[node1] - old_common
+                        if modularity2 - modularity1 > best_delta:
+                            best_delta = modularity2 - modularity1
+                            best_community = community_id
+                        partition[node1] = old_community_id
+                        com_loops[community_id] -= loops[node1] + common
+                        com_outer[community_id] -= outer[node1] - common
+                        com_loops[old_community_id] += loops[node1] + old_common
+                        com_outer[old_community_id] += outer[node1] - old_common
+                if best_delta > 0:
+                    improvement = True
+                    improvement_outer = True
+                    modularity += best_delta
+                    partition[node1] = best_community
+                    common = com_adj_list[node1][best_community]
+                    com_loops[best_community] += loops[node1] + common
+                    com_outer[best_community] += outer[node1] - common
+                    com_loops[old_community_id] -= loops[node1] + old_common
+                    com_outer[old_community_id] -= outer[node1] - old_common
+                    community[best_community].add(node1)
+                    community[old_community_id].remove(node1)
+                    update_community_adjacency(com_adj_list, adj_list, node1, best_community, old_community_id)
+
         partition = relabel(partition)
         n_nodes, adj_list, loops, outer, communities = merge_nodes(partition, adj_list, loops, outer, communities)
     return communities, modularity

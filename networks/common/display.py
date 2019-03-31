@@ -1,18 +1,31 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-color = ["red", "green", "blue", "purple", "yellow", "orange", "cyan", "grey", "pink", "black"]
+color = ["red", "green", "yellow", "cyan", "grey", "orange", "wheat", "olive", "purple", "blue", "pink", "lime",
+         "fuchsia", "lightgrey", "skyblue", "lightblue", "plum", "lightseagreen"]
+
+pos = None
 
 
-def display(network, partitioning):
+def display(nodes, edges, communities):
     graph = nx.Graph()
-    n_nodes = network.get_node_count()
-    adj_list = network.get_adj_list()
-    graph.add_nodes_from([n for [n] in network.get_nodes()])
-    graph.add_edges_from([(i, j) for i in range(n_nodes) for (j, _) in adj_list[i] if i < j])
+    graph.add_nodes_from(nodes)
+    graph.add_edges_from(edges)
+    n_nodes = len(nodes)
+    partitioning = get_partitioning(communities, n_nodes)
     color_map = n_nodes * [0]
     for i in range(n_nodes):
         color_map[i] = color[partitioning[i]]
-
-    nx.draw(graph, node_color=color_map)
+    global pos
+    if pos is None:
+        pos = nx.spring_layout(graph)
+    nx.draw(graph, with_labels=True, node_color=color_map, pos=pos)
     plt.show()
+
+
+def get_partitioning(communities, n_nodes):
+    partitioning = [0] * n_nodes
+    for i in range(len(communities)):
+        for node in communities[i]:
+            partitioning[node] = i
+    return partitioning
