@@ -1,3 +1,6 @@
+# Calculates rand index between two partitions
+
+
 def evaluate(actual, found):
     n_nodes = len(actual)
     dist = 0

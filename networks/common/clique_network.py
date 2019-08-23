@@ -1,3 +1,7 @@
+# Generates a network consisting of a number of equally sized cliques
+# connected to one another by singular edges
+
+
 def generate_clique_network(clique_size, n_cliques):
     vertices = []
     edges = []

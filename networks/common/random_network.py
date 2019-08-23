@@ -1,7 +1,10 @@
-
-# initializes random network with equally sized communities
-# returns nodes and edges of generated network and expected partitioning
 from random import shuffle, uniform, sample
+
+# Initializes random network with equally sized communities
+# Returns nodes and edges of generated network and expected partitioning
+# done in accordance with Girvan-Newman model - refer to:
+# Girvan, M. and Newman, M. E. J. (2002). Community structure in social and biological
+# networks. Proceedings of the National Academy of Sciences, 99(12):7821–7826.
 
 
 def generate_synthetic_network(n_communities, community_size, prob_inner, prob_outer):
@@ -17,6 +20,12 @@ def generate_synthetic_network(n_communities, community_size, prob_inner, prob_o
                     or partitioning[i] != partitioning[j] and rand <= prob_outer:
                 edges.append((i, j))
     return nodes, edges, partitioning
+
+# Returns nodes and edges of a random network generated in accordance with a social
+# network model proposed by Toivonen et al. - refer to:
+# Toivonen, R., Onnela, J.-P., Saramäki, J., Hyvönen, J., and Kaski, K. (2006).
+# A model for social networks. Physica A Statistical Mechanics and its Applications,
+# 371(2):851–860.
 
 
 def generate_social_network(nodes, adj_list, goal_nodes, prob_prim, prob_sec):

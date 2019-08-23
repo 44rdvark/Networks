@@ -1,12 +1,13 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-
 from networks.common.partition_to_communities import get_partitioning
 
 color = ["red", "green", "yellow", "cyan", "grey", "orange", "wheat", "olive", "purple", "blue", "pink", "lime",
          "fuchsia", "lightgrey", "skyblue", "lightblue", "plum", "lightseagreen"]
 
 pos = None
+
+# Displays a graph partitioning into communities utilizing colors to denote distinct communities
 
 
 def display(nodes, edges, communities):
