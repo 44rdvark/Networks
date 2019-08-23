@@ -1,5 +1,6 @@
 from networkx import read_gml
 from networks.clauset_newman_moore import clauset_newman_moore
+from networks.common.display import display
 from networks.girvan_newman import girvan_newman
 from networks.hierarchical_clustering import hierarchical_clustering
 from networks.blondel import blondel

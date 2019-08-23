@@ -1,16 +1,11 @@
-def get_modularity(nodes, edges, communities):
+def get_modularity(nodes, edges, partition):
     n_nodes = len(nodes)
     n_edges = len(edges)
     adj_list = [[] for _ in range(n_nodes)]
     for edge in edges:
         adj_list[edge[0]].append(edge[1])
         adj_list[edge[1]].append(edge[0])
-    n_communities = 0
-    partition = [0] * n_nodes
-    for community in communities:
-        for node in community:
-            partition[node] = n_communities
-        n_communities += 1
+    n_communities = max(partition) + 1
     inner_degs = n_communities * [0]
     total_degs = n_communities * [0]
     for node1 in range(n_nodes):
