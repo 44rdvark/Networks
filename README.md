@@ -1,5 +1,6 @@
 ## An overview of algorithms for community detection in networks
 My BSc thesis in *Computer Science - IT Analyst* written at Jagiellonian University in 2019.
+
 The paper outlines common properties of networks, formalizes the concept of community detection by introducing a measure known as modularity and provides descriptions of the most popular modularity maximization algorithms, and their pseudocodes. Finally, it includes multiple tests and their analysis, showcasing how different algorithms compare in terms of execution time and the quality of partitions detected. The paper also exemplifies the existence of a resolution limit - the fact that modularity maximization algorithms fail to detect communities smaller than a certain scale. Lastly, it includes a thorough analysis of how the vertex ordering of the network impacts the execution time of Blondel et al. algorithm and provides a useful heuristic for improving it.
 ### Contents
 This project consists of:
